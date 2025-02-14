@@ -2,10 +2,13 @@ import math
 
 
 class Vector2:
+    """
+        2 Dimensional Vector class. Supports basic arithmetic 
+    """
     def __init__(self, x: float, y: float):
         self._x = x
         self._y = y
-        self._lenght = math.sqrt(self._x**2 + self._y**2)
+        self._length = math.sqrt(self._x**2 + self._y**2)
         
     @property
     def x(self): 
@@ -14,7 +17,7 @@ class Vector2:
     @x.setter
     def x(self, value: float):
         self._x = value
-        self.__lenght_calculation()
+        self.__length_calculation()
         
     @property
     def y(self):
@@ -23,28 +26,52 @@ class Vector2:
     @y.setter
     def y(self, value: float):
         self._y = value
-        self.__lenght_calculation()
+        self.__length_calculation()
         
     @property
-    def betrag(self):
-        return self._lenght
+    def length(self):
+        return self._length
     
-    def normalise(self):
-        self._x = self._x / self.betrag
-        self._y = self._y / self.betrag
-        self._betrag = 1
-        self.__lenght_calculation()
+    def normalize(self):
+        self._x = self._x / self.length
+        self._y = self._y / self.length
+        self._length = 1
+        self.__length_calculation()
+        
+    def dot(self, vec3: 'Vector3'):
+        return self.x * vec3.x + self._y * vec3.y
 
-    def __lenght_calculation(self):
-        self._betrag = math.sqrt(self._x**2 + self._y**2)
-        print(self.betrag)
+    def __add__(self, other):
+        if isinstance(other, Vector3):
+            return Vector3(self.x + other.x,
+                           self.y + other.y)
+        else:
+            raise RuntimeError('Vector2 can only be added/subbed with Vector3')
+        
+    def __sub__(self, other):
+        self.__add__(-other)
+        
+    def __mul__(self, other):
+        if isinstance(other, float) or isinstance(other, int):
+            return Vector3(self.x * other,
+                           self.y * other)
+            
+    def __str__(self):
+        return f'Vector2: {self.x}, {self.y}, {self.length}'
+
+    def __length_calculation(self):
+        self._length = math.sqrt(self._x**2 + self._y**2)
+        
         
 class Vector3:
+    """
+        3 Dimensional Vector class. Support for basic arithmetic
+    """
     def __init__(self, x: float, y: float, z: float):
         self._x = x
         self._y = y
         self._z = z
-        self._lenght = math.sqrt(self._x**2 + self._y**2 + self._z**2)
+        self._length = math.sqrt(self._x**2 + self._y**2 + self._z**2)
         
     @property
     def x(self): 
@@ -74,8 +101,8 @@ class Vector3:
         self.__length_calculation()
         
     @property
-    def lenght(self):
-        return self._lenght
+    def length(self):
+        return self._length
     
     def dot(self, vec3: 'Vector3'):
         return self.x * vec3.x + self._y * vec3.y + self.z*vec3.z
@@ -84,6 +111,12 @@ class Vector3:
         return Vector3(self.y*vec3.z - self.z*vec3.y,
                        self.z*vec3.x - self.x*vec3.z,
                        self.x*vec3.y - self.y*vec3.x)
+        
+    def normalize(self):
+        self._x /= self._length
+        self._y /= self._length
+        self._z /= self._length
+        self._length = 1
         
     def __add__(self, other):
         if isinstance(other, Vector3):
@@ -103,8 +136,8 @@ class Vector3:
                            self.z * other)
             
     def __str__(self):
-        return f'Vector3: {self.x}, {self.y}, {self.z}, {self.lenght}'
+        return f'Vector3: {self.x}, {self.y}, {self.z}, {self.length}'
     
     def __length_calculation(self):
-        self._lenght = math.sqrt(self._x**2 + self._y**2 + self._z**2)
+        self._length = math.sqrt(self._x**2 + self._y**2 + self._z**2)
         
