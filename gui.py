@@ -41,6 +41,20 @@ class GUI:
         self.window.blit(self.render_surface, (0, 0))
         pygame.display.flip()  
         
+    def draw_smoke(self, smoke_list:list[float], width):
+        for index, smoke_overlay in enumerate(smoke_list):
+            x = index%width * 4
+            y = index//width * 4
+            colour = (255*smoke_overlay,
+                      255*smoke_overlay,
+                      255*smoke_overlay)
+
+            pygame.draw.rect(self.render_surface, colour, (x, y, 4, 4))
+        
+        self.window.blit(self.render_surface, (0, 0))
+        pygame.display.flip()  
+        
+        
     def mainloop(self):
         running = True
         T = time.time()
