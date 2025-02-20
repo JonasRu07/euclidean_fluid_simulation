@@ -4,6 +4,8 @@ import sys
 
 import pygame
 
+from simulation import Fluid
+
 
 class GUI:
     def __init__(self, grid_width: int, grid_height: int):
@@ -54,10 +56,31 @@ class GUI:
         self.window.blit(self.render_surface, (0, 0))
         pygame.display.flip()  
         
+    def draw_dir(self, direction_list: list, width:int):
+        l = []
+        for i in direction_list:
+            for ii in i:
+                l.append(ii)
+        
+        for index, vector in enumerate(l):
+            pygame.draw.line(self.render_surface,
+                             (127,127,127),
+                             (index%width * 12 + 100, index//width * 12 + 100),
+                             (index%width * 12 + vector.x*5 + 100, index//width * 12 + vector.y*5 + 100))
+            
+        self.window.blit(self.render_surface, (0,0))
+        pygame.display.flip()
+        self.render_surface.fill((127,69,42))
+        
+        
         
     def mainloop(self):
         running = True
         T = time.time()
+        F = Fluid(40, 30)
+        for i in range(F.height):
+            print(i)
+            F.v_grid[i][0] = 5
         while running:
         
             for event in pygame.event.get():
@@ -70,15 +93,19 @@ class GUI:
                     print(f'User pressed mouse button at {event.pos}')
             
 
-            self.window.fill(self.COLOUR['BLACK'])            
-            
+            self.window.fill(self.COLOUR['BLACK'])    
+            F.solve_incompressible_2D_array()
+            for i in range(F.height):
+                F.v_grid[i][0] = 5
             
             # self.draw_simulation()
             # self.draw_limit_test()
-            # self.draw_pressure([0 for _ in range(120_000)], 400)
-            self.draw_pressure_2([0 for _ in range(14_400)], 160)
-            
-            self.__show_fps((time.time() - T)/100)
+            # self.draw_pressure_2([0 for _ in range(120_000)], 400)
+            # self.draw_pressure_2([0 for _ in range(14_400)], 160)
+            self.draw_dir(F.directional_grid, 40)
+            delta_time = time.time()
+            self.__show_fps(delta_time)
+            if delta_time < 1: time.sleep(1 - delta_time)
             T = time.time()
             
     def quit(self):
@@ -87,7 +114,6 @@ class GUI:
     def __show_fps(self, delta_time:float):
         sys.stdout.write(f'\rRender time: {round(delta_time* 1000, 2)}ms {round(1/delta_time, 3)} FPS')
         sys.stdout.flush()
-        
         
 gui = GUI(60, 80)
 gui.mainloop()
