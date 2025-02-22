@@ -4,7 +4,7 @@ import sys
 
 import pygame
 
-from simulation import Fluid
+from fluid import Fluid
 
 
 class GUI:
@@ -65,8 +65,8 @@ class GUI:
         for index, vector in enumerate(l):
             pygame.draw.line(self.render_surface,
                              (127,127,127),
-                             (index%width * 12 + 100, index//width * 12 + 100),
-                             (index%width * 12 + vector.x*5 + 100, index//width * 12 + vector.y*5 + 100))
+                             (index%width * 20 + 50, index//width * 20 + 50),
+                             (index%width * 20 + vector.x*5 + 50, index//width * 20 + vector.y*5 + 50))
             
         self.window.blit(self.render_surface, (0,0))
         pygame.display.flip()
@@ -80,7 +80,7 @@ class GUI:
         F = Fluid(40, 30)
         for i in range(F.height):
             print(i)
-            F.v_grid[i][0] = 5
+            F.v_grid[i][10] = 50
         while running:
         
             for event in pygame.event.get():
@@ -88,31 +88,34 @@ class GUI:
                     print(f'User quit the game')
                     running = False
                 elif event.type == pygame.KEYDOWN:
-                    print(f'User pressed key {chr(event.key)}.')
+                    if event.key == pygame.K_ESCAPE:
+                        running = False 
+                    else:                   
+                        print(f'User pressed key {chr(event.key)}.')
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     print(f'User pressed mouse button at {event.pos}')
             
 
             self.window.fill(self.COLOUR['BLACK'])    
             F.solve_incompressible_2D_array()
-            for i in range(F.height):
-                F.v_grid[i][0] = 5
+            """for i in range(F.height):
+                F.v_grid[i][10] = 5"""
             
             # self.draw_simulation()
             # self.draw_limit_test()
             # self.draw_pressure_2([0 for _ in range(120_000)], 400)
             # self.draw_pressure_2([0 for _ in range(14_400)], 160)
-            self.draw_dir(F.directional_grid, 40)
-            delta_time = time.time()
+            self.draw_dir(F.directional_grid, F.width)
+            delta_time = time.time() - T
             self.__show_fps(delta_time)
-            if delta_time < 1: time.sleep(1 - delta_time)
+            # if delta_time < 1: time.sleep(1 - delta_time)
             T = time.time()
             
     def quit(self):
         pygame.quit()
         
     def __show_fps(self, delta_time:float):
-        sys.stdout.write(f'\rRender time: {round(delta_time* 1000, 2)}ms {round(1/delta_time, 3)} FPS')
+        sys.stdout.write(f'\rRender time: {round(delta_time* 1000, 2)}ms {round(1/delta_time, 3)} FPS \n')
         sys.stdout.flush()
         
 gui = GUI(60, 80)
