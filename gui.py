@@ -1,24 +1,20 @@
 import random
-import time
-import sys
 
 import pygame
 
-from fluid import Fluid
 
-
-class GUI:
-    def __init__(self, grid_width: int, grid_height: int):
+class SimulationGUI:
+    def __init__(self, grid_width: int, grid_height: int, action):
         pygame.init()
         
         self.grid_width = grid_width
         self.grid_height = grid_height
+        self.action = action
         
         self.width = grid_width*4 + 20
         self.height = grid_height * 4 + 50
         
-        # self.render_surface = pygame.Surface((self.width, self.height))
-        self.render_surface = pygame.Surface((1600, 1200))
+        self.render_surface = pygame.Surface((self.width, self.height))
         
         self.COLOUR = {
             'WHITE' : (255, 255, 255),
@@ -26,11 +22,10 @@ class GUI:
             'BLACK' : (000, 000, 000)
             }
         
-        # self.window = pygame.display.set_mode((self.height, self.width))
-        self.window = pygame.display.set_mode((1600, 1200))
+        self.window = pygame.display.set_mode((self.height, self.width))
         pygame.display.set_caption('Euclidean Fluid Simulation')
         
-    def draw_pressure_2(self, pressure_list:list[float], width:int):
+    def draw_pressure(self, pressure_list:list[float], width:int):
         for index, pressure in enumerate(pressure_list):
             x = index%width * 4
             y = index//width * 4
@@ -72,53 +67,21 @@ class GUI:
         pygame.display.flip()
         self.render_surface.fill((127,69,42))
         
-        
-        
-    def mainloop(self):
-        running = True
-        T = time.time()
-        F = Fluid(40, 30)
-        for i in range(F.height):
-            print(i)
-            F.v_grid[i][10] = 50
-        while running:
-        
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+    def frame(self):
+        self.window.fill(self.COLOUR['BLACK'])
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                print(f'User quit the game')
+                return(False)
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
                     print(f'User quit the game')
-                    running = False
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        running = False 
-                    else:                   
-                        print(f'User pressed key {chr(event.key)}.')
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    print(f'User pressed mouse button at {event.pos}')
-            
-
-            self.window.fill(self.COLOUR['BLACK'])    
-            F.solve_incompressible_2D_array()
-            """for i in range(F.height):
-                F.v_grid[i][10] = 5"""
-            
-            # self.draw_simulation()
-            # self.draw_limit_test()
-            # self.draw_pressure_2([0 for _ in range(120_000)], 400)
-            # self.draw_pressure_2([0 for _ in range(14_400)], 160)
-            self.draw_dir(F.directional_grid, F.width)
-            delta_time = time.time() - T
-            self.__show_fps(delta_time)
-            # if delta_time < 1: time.sleep(1 - delta_time)
-            T = time.time()
+                    return False 
+                else:                   
+                    print(f'User pressed key {chr(event.key)}.')
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                print(f'User pressed mouse button at {event.pos}')
             
     def quit(self):
+        print('GUI quitting.')
         pygame.quit()
-        
-    def __show_fps(self, delta_time:float):
-        sys.stdout.write(f'\rRender time: {round(delta_time* 1000, 2)}ms {round(1/delta_time, 3)} FPS \n')
-        sys.stdout.flush()
-        
-gui = GUI(60, 80)
-gui.mainloop()
-gui.quit()
-
