@@ -86,3 +86,11 @@ class Fluid:
     @property
     def flow_directions(self):
         return self.directional_grid
+    
+    @property
+    def fluid_width(self):
+        return self.width
+    
+    @property
+    def fluid_height(self):
+        return self.height
