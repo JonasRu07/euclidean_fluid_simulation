@@ -140,7 +140,8 @@ class Menu_GUI:
             self.entry_sim_height.configure(bg=Colour.rgb_to_hex(Colour.LIGHTGREEN))
         else:
             self.entry_sim_height.configure(bg=Colour.rgb_to_hex(Colour.LIGHTRED))
-    def frame(self):
+            
+    def start(self):
         self.window.mainloop()
         
         
