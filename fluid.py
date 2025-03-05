@@ -11,7 +11,7 @@ class Fluid:
         self.width = width
         self.height = height
         
-        self.u_grid = [[0 for _ in range(self.width)] for __ in range(self.height+1)]
+        self._u_grid = [[0 for _ in range(self.width)] for __ in range(self.height+1)]
         self._v_grid = [[0 for _ in range(self.width+1)] for __ in range(self.height)]
         
         self.directional_grid = [[Vector2(0, 0) for _ in range(self.width)] for __ in range(self.height)]
