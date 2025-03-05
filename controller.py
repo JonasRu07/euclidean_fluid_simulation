@@ -19,6 +19,8 @@ class Controller:
             self.simulation = Simulation(self.new_sim_width,
                                          self.new_sim_height,
                                          self.new_sim_tps)
+            self.simulation.mainloop()
+
         
     def set_sim_values(self, width=40, height=30, tps=30):
         self.valid_config = True
