@@ -18,7 +18,7 @@ class Fluid:
                      
     def solve_incompressible_2D_array(self):
         aux_u_grid = copy.deepcopy(self.u_grid)
-        aux_v_grid = copy.deepcopy(self.__v_grid)
+        aux_v_grid = copy.deepcopy(self._v_grid)
         for i in range(self.height):
             for j in range(self.width):
                 # print(i, j)
@@ -31,8 +31,8 @@ class Fluid:
                     divergence = \
                         + self.u_grid[i][j] \
                         - self.u_grid[i+1][j] \
-                        + self.__v_grid[i][j] \
-                        - self.__v_grid[i][j+1]
+                        + self._v_grid[i][j] \
+                        - self._v_grid[i][j+1]
                     aux_u_grid[i][j] -= self.u_grid[i][j]
                     aux_u_grid[i+1][j] += divergence/3
                     aux_v_grid[i][j] -= divergence/3
@@ -46,15 +46,15 @@ class Fluid:
                     divergence = \
                         + self.u_grid[i][j] \
                         - self.u_grid[i+1][j] \
-                        + self.__v_grid[i][j] \
-                        - self.__v_grid[i][j+1]
+                        + self._v_grid[i][j] \
+                        - self._v_grid[i][j+1]
                     aux_u_grid[i][j] -= divergence/3
                     aux_u_grid[i+1][j] = self.u_grid[i+1][j]
                     aux_v_grid[i][j] -= divergence/3
                     aux_v_grid[i][j+1] += divergence/3
-                    x = self.__v_grid[i][j] + self.__v_grid[i][j+1]
+                    x = self._v_grid[i][j] + self._v_grid[i][j+1]
                     y = self.u_grid[i][j] + self.u_grid[i+1][j]
-                    self.directional_grid[i][j] = Vector2(x=self.__v_grid[i][j] + self._v_grid[i][j+1],
+                    self.directional_grid[i][j] = Vector2(x=self._v_grid[i][j] + self._v_grid[i][j+1],
                                                         y=self.u_grid[i][j] + self.u_grid[i+1][j])
                 else:
                     divergence = \
@@ -71,7 +71,7 @@ class Fluid:
                     self.directional_grid[i][j] = Vector2(x=self._v_grid[i][j] + self._v_grid[i][j+1],
                                                         y=self.u_grid[i][j] + self.u_grid[i+1][j])
                 
-                self.u_grid = aux_u_grid
+                self._u_grid = aux_u_grid
                 self._v_grid = aux_v_grid
 
 
