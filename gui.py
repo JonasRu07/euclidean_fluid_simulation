@@ -1,6 +1,7 @@
 import random
 import tkinter as tk
 import time
+import traceback
 
 import pygame
 
@@ -80,38 +81,45 @@ class SimulationGUI:
         for i in direction_list:
             for ii in i:
                 l.append(ii)
-        
+
         for index, vector in enumerate(l):
-            pygame.draw.line(surface,
-                             Colour.WHITE,
-                             (index%width *self.size_per_square + 20, index//width * self.size_per_square + 20),
-                             (index%width * self.size_per_square + vector.x + 20, index//width * self.size_per_square + vector.y + 20))
-            
+            if not -0.1 < vector.x < 0.1 or not -0.1 < vector.y < 0.1:
+                pygame.draw.line(surface,
+                                Colour.WHITE,
+                                (index%width *self.size_per_square + 20, index//width * self.size_per_square + 20),
+                                (index%width * self.size_per_square + vector.x + 20, index//width * self.size_per_square + vector.y + 20))
+                
         self.window.blit(surface, (0,0))
         pygame.display.flip()
         
     def loop(self):
-        run = True
-        while run:
-            T = time.time()
-            self.window.fill(Colour.BLACK)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    print(f'\n User quit the simulation')
-                    run = False
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
+        try:
+            run = True
+            while run:
+                T = time.time()
+                self.window.fill(Colour.BLACK)
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
                         print(f'\n User quit the simulation')
                         run = False
-                    else:                   
-                        print(f'\n User pressed key {chr(event.key)}.')
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    print(f'\n User pressed mouse button at {event.pos}')
-            self.action()
-            self.draw_dir(self.get_visualize_data(), self.grid_width)
-            # self.draw_pressure([0 for _ in range(self.grid_height*self.grid_width)], self.grid_width)
-            self.print_fps(time.time()-T)
-        self.quit()            
+                    elif event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_ESCAPE:
+                            print(f'\n User quit the simulation')
+                            run = False
+                        else:
+                            try:      
+                                print(f'\n User pressed key {chr(event.key)}.')
+                            except: pass
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        print(f'\n User pressed mouse button at {event.pos}')
+                self.action()
+                self.draw_dir(self.get_visualize_data(), self.grid_width)
+                # self.draw_pressure([0 for _ in range(self.grid_height*self.grid_width)], self.grid_width)
+                self.print_fps(time.time()-T)
+            self.quit()            
+        except Exception as e:
+            self.quit()  
+            raise e          
             
     def quit(self):
         print('\n --> GUI quitting.')
@@ -215,5 +223,4 @@ class Menu_GUI:
         
     def start(self):
         self.window.mainloop()
-        
         
