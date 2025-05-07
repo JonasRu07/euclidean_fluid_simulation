@@ -1,7 +1,6 @@
 import random
 import tkinter as tk
 import time
-import traceback
 
 import pygame
 
@@ -47,34 +46,6 @@ class SimulationGUI:
         self.window = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption('Euclidean Fluid Simulation')
         
-    def draw_pressure(self, pressure_list:list[float], width:int):
-        surface = pygame.Surface((self.width, self.height))
-        for index, pressure in enumerate(pressure_list):
-            x = index%width * 4
-            y = index//width * 4
-            colour =(random.randint(0, 255), # Red channel
-                     random.randint(0, 255), # Green channel
-                     random.randint(0, 255)) # Blue channel)
-
-            pygame.draw.rect(surface, colour, (x, y, 4, 4))
-        
-        self.window.blit(surface, (0, 0))
-        pygame.display.flip()  
-        
-    def draw_smoke(self, smoke_list:list[float], width):
-        surface = pygame.Surface((self.width, self.height))
-        for index, smoke_overlay in enumerate(smoke_list):
-            x = index%width * 4
-            y = index//width * 4
-            colour = (255*smoke_overlay,
-                      255*smoke_overlay,
-                      255*smoke_overlay)
-
-            pygame.draw.rect(surface, colour, (x, y, 4, 4))
-        
-        self.window.blit(surface, (0, 0))
-        pygame.display.flip()  
-        
     def draw_dir(self, direction_list: list, width:int):
         surface = pygame.Surface((self.width, self.height))
         width = width + 2
@@ -82,9 +53,10 @@ class SimulationGUI:
         for i in direction_list:
             for ii in i:
                 l.append(ii)
+       
 
         for index, vector in enumerate(l):
-            if not -0.1 < vector.x < 0.1 or not -0.1 < vector.y < 0.1 or True:
+            if not -0.1 < vector.x < 0.1 or not -0.1 < vector.y < 0.1:
                 from_x = float(index%width *self.size_per_square + 20)
                 from_y = float(index//width *self.size_per_square + 20)
                 to_x = float(from_x + vector.x)
