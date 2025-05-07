@@ -77,17 +77,19 @@ class SimulationGUI:
         
     def draw_dir(self, direction_list: list, width:int):
         surface = pygame.Surface((self.width, self.height))
+        width = width + 2
         l = []
         for i in direction_list:
             for ii in i:
                 l.append(ii)
 
         for index, vector in enumerate(l):
-            if not -0.1 < vector.x < 0.1 or not -0.1 < vector.y < 0.1:
-                pygame.draw.line(surface,
-                                Colour.WHITE,
-                                (index%width *self.size_per_square + 20, index//width * self.size_per_square + 20),
-                                (index%width * self.size_per_square + vector.x + 20, index//width * self.size_per_square + vector.y + 20))
+            if not -0.1 < vector.x < 0.1 or not -0.1 < vector.y < 0.1 or True:
+                from_x = float(index%width *self.size_per_square + 20)
+                from_y = float(index//width *self.size_per_square + 20)
+                to_x = float(from_x + vector.x)
+                to_y = float(from_y + vector.y)
+                pygame.draw.line(surface, Colour.WHITE, (from_x, from_y), (to_x, to_y))
                 
         self.window.blit(surface, (0,0))
         pygame.display.flip()
