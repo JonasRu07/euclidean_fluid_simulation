@@ -9,6 +9,7 @@ from objects import Rectangle, Circle
 
 class Fluid:
     def __init__(self, width: int, height: int, tps:int):
+        
         self.width = width + 2
         self.height = height + 2
         
@@ -21,7 +22,7 @@ class Fluid:
         
         self.directional_grid = [[Vector2(0, 0) for _ in range(self.width)] for __ in range(self.height)]
         
-        self.objects:list = [Circle(30, 45, 25)]
+        self.objects:list = [Circle(30, 45, 25), Rectangle(100, 20, 40, 20)]
         
         self.reset_wind_channel(0, self.height, 25)
         
@@ -33,7 +34,7 @@ class Fluid:
         for i in range(self.height+1): 
             self.scalars[i][0] = 0
             
-        print(self.scalars)
+        self.apply_object_interaction()
                      
     def solve_incompressible_2D_array(self):
         aux_u_grid = copy.deepcopy(self.u_grid)
@@ -72,17 +73,12 @@ class Fluid:
         
         
     def apply_object_interaction(self):
-        """
-            Useless for now, as should be done with scalers
-        """
         for obj in self.objects:
-            for i in range(self.height):
-                for j in range(self.width):
+            for i in range(self.width+1):
+                for j in range(self.height+1):
                     if obj.occupies(i, j):
-                        self.u_grid[i][j] = 0 
-                        if j < self.width:
-                            self.v_grid[i][j] = 0
-                        self.directional_grid[i][j] = Vector2(0, 0)
+                        self.scalars[i][j] = 0
+        
     
                     
     def reset_wind_channel(self, height:int, size:int, power:float):
@@ -91,3 +87,5 @@ class Fluid:
             
                 
     def get_flow_dir(self): return self.directional_grid
+    
+    def get_objects(self): return self.objects

@@ -12,6 +12,7 @@ class Simulation:
         self.gui: SimulationGUI = SimulationGUI(width,
                                                 height,
                                                 self.fluid.get_flow_dir,
+                                                self.fluid.get_objects,
                                                 self.fluid.solve_incompressible_2D_array,
                                                 self.__show_fps)
         

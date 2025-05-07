@@ -32,8 +32,9 @@ class Colour:
 
 
 class SimulationGUI:
-    def __init__(self, grid_width: int, grid_height: int, get_visualize_data, action, fps):
+    def __init__(self, grid_width: int, grid_height: int, get_visualize_data, get_objects, action, fps):
         self.get_visualize_data = get_visualize_data
+        self.get_objects_data = get_objects
         self.action = action
         self.print_fps = fps
         
@@ -46,14 +47,14 @@ class SimulationGUI:
         self.window = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption('Euclidean Fluid Simulation')
         
+        self.render_surface = pygame.Surface((self.width, self.height))
+        
     def draw_dir(self, direction_list: list, width:int):
-        surface = pygame.Surface((self.width, self.height))
         width = width + 2
         l = []
         for i in direction_list:
             for ii in i:
-                l.append(ii)
-       
+                l.append(ii)       
 
         for index, vector in enumerate(l):
             if not -0.1 < vector.x < 0.1 or not -0.1 < vector.y < 0.1:
@@ -61,10 +62,22 @@ class SimulationGUI:
                 from_y = float(index//width *self.size_per_square + 20)
                 to_x = float(from_x + vector.x)
                 to_y = float(from_y + vector.y)
-                pygame.draw.line(surface, Colour.WHITE, (from_x, from_y), (to_x, to_y))
-                
-        self.window.blit(surface, (0,0))
-        pygame.display.flip()
+                pygame.draw.line(self.render_surface, Colour.WHITE, (from_x, from_y), (to_x, to_y))
+        
+    def draw_objects(self, object_list:list):
+        for obj in object_list:
+            if obj.of_type == 'Circle':
+                pygame.draw.circle(self.render_surface,
+                                   Colour.LIGHTRED,
+                                   (obj.x*self.size_per_square + 20, obj.y*self.size_per_square + 20),
+                                   obj.radian*self.size_per_square)
+            if obj.of_type == 'Rectangle':
+                pygame.draw.rect(self.render_surface,
+                                 Colour.GREEN,
+                                 (obj.x * self.size_per_square + 20,
+                                  obj.y * self.size_per_square + 20,
+                                  obj.width * self.size_per_square,
+                                  obj.height * self.size_per_square))
         
     def loop(self):
         try:
@@ -88,7 +101,12 @@ class SimulationGUI:
                         print(f'\n User pressed mouse button at {event.pos}')
                 self.action()
                 self.draw_dir(self.get_visualize_data(), self.grid_width)
-                # self.draw_pressure([0 for _ in range(self.grid_height*self.grid_width)], self.grid_width)
+                self.draw_objects(self.get_objects_data())
+                
+                self.window.blit(self.render_surface, (0,0))
+                pygame.display.flip()
+                self.render_surface = pygame.Surface((self.width, self.height))
+                
                 self.print_fps(time.time()-T)
             self.quit()            
         except Exception as e:
