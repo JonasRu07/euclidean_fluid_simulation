@@ -8,7 +8,7 @@ from objects import Rectangle, Circle
 
 
 class Fluid:
-    def __init__(self, width: int, height: int, tps:int):
+    def __init__(self, width: int, height: int, tps:int, objects:list):
         
         self.width = width + 2
         self.height = height + 2
@@ -22,7 +22,7 @@ class Fluid:
         
         self.directional_grid = [[Vector2(0, 0) for _ in range(self.width)] for __ in range(self.height)]
         
-        self.objects:list = [Circle(30, 45, 25), Rectangle(100, 20, 40, 20)]
+        self.objects:list = objects
         
         self.reset_wind_channel(0, self.height, 25)
         

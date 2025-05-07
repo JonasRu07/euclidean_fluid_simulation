@@ -6,10 +6,11 @@ class Controller:
         Main Control unit
     """
     def __init__(self):
-        self.gui = Menu_GUI(self.start_simulation)
+        self.gui = Menu_GUI(self.start_simulation, self.add_object)
         self.new_sim_width: int = -1        
         self.new_sim_height: int = -1
         self.new_sim_tps: int = -1
+        self.objects: list = []
         self.valid_config: bool = False
         self.simulation = None
         
@@ -18,10 +19,13 @@ class Controller:
         if self.valid_config:
             self.simulation = Simulation(self.new_sim_width,
                                          self.new_sim_height,
-                                         self.new_sim_tps)
+                                         self.new_sim_tps,
+                                         self.objects)
+            self.gui.close()
             self.simulation.mainloop()
+            
+    def add_object(self, obj): self.objects.append(obj)
 
-        
     def set_sim_values(self, width=40, height=30, tps=30):
         self.valid_config = True
         if isinstance(width, int) and width > 0:
