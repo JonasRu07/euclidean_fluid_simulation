@@ -37,6 +37,41 @@ class Fluid:
             self.scalars[i][0] = 0
             
         self.apply_object_interaction()
+        
+    def solve_incompressible_2D_array(self):
+        aux_u_grid = copy.deepcopy(self.u_grid)
+        aux_v_grid = copy.deepcopy(self.v_grid)
+        for i in range(self.height):
+            for j in range(self.width):
+                
+                #Scalers
+                scaler_x_0 = self.scalars[i-1][j]
+                scaler_x_1 = self.scalars[i+1][j]
+                scaler_y_0 = self.scalars[i][j-1]
+                scaler_y_1 = self.scalars[i][j+1]
+                
+                scaler = scaler_x_0 + scaler_x_1 + scaler_y_0 + scaler_y_1
+                
+                if scaler == 0: continue
+                
+                divergence = \
+                            + self.u_grid[i][j] \
+                            - self.u_grid[i+1][j] \
+                            + self.v_grid[i][j] \
+                            - self.v_grid[i][j+1]
+                            
+                pressure = divergence / scaler
+                
+                aux_u_grid[i][j] -= pressure * scaler_x_0
+                aux_u_grid[i+1][j] += pressure * scaler_x_1
+                aux_v_grid[i][j] -= pressure * scaler_y_0
+                aux_v_grid[i][j+1] += pressure * scaler_y_1
+                
+                self.directional_grid[i][j] = Vector2(x=self.v_grid[i][j] + self.v_grid[i][j+1],
+                                                      y=self.u_grid[i][j] + self.u_grid[i+1][j])
+                
+        self.u_grid = aux_u_grid
+        self.v_grid = aux_v_grid
                      
     def advect_velocity_simple(self):
         

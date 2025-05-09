@@ -14,7 +14,7 @@ class Controller:
         self.valid_config: bool = False
         self.simulation = None
         
-    def start_simulation(self, width=40, height=30, tps=30):
+    def start_simulation(self, width=40, height=30, tps=50):
         self.set_sim_values(width, height, tps)
         if self.valid_config:
             self.simulation = Simulation(self.new_sim_width,
@@ -26,7 +26,7 @@ class Controller:
             
     def add_object(self, obj): self.objects.append(obj)
 
-    def set_sim_values(self, width=40, height=30, tps=30):
+    def set_sim_values(self, width=40, height=30, tps=50):
         self.valid_config = True
         if isinstance(width, int) and width > 0:
             self.new_sim_width = width

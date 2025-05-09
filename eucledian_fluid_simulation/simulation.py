@@ -5,7 +5,7 @@ from gui import SimulationGUI
 
 class Simulation:
     
-    def __init__(self, width:int= 160, height:int=90, tps=30, objects=[]):
+    def __init__(self, width:int= 160, height:int=90, tps=50, objects=[]):
 
         self.tps = tps
         self.fluid = Fluid(width, height, tps, objects)
@@ -14,7 +14,8 @@ class Simulation:
                                                 self.fluid.get_flow_dir,
                                                 objects,
                                                 self.fluid.solve_incompressible_2D_array,
-                                                self.__show_fps)
+                                                self.__show_fps,
+                                                self.tps)
         
         
     def mainloop(self):

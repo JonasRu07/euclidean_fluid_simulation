@@ -34,11 +34,13 @@ class Colour:
 
 
 class SimulationGUI:
-    def __init__(self, grid_width: int, grid_height: int, get_visualize_data, objects, action, fps):
+    def __init__(self, grid_width: int, grid_height: int, get_visualize_data, objects, action, show_tps, target_tps):
         self.get_visualize_data = get_visualize_data
         self.objects = objects
         self.action = action
-        self.print_fps = fps
+        self.print_tps = show_tps
+        self.target_tps = target_tps
+        self.target_delta_time = 1 / self.target_tps
         
         self.grid_width = grid_width
         self.grid_height = grid_height
@@ -109,7 +111,11 @@ class SimulationGUI:
                 pygame.display.flip()
                 self.render_surface = pygame.Surface((self.width, self.height))
                 
-                self.print_fps(time.time()-T)
+                real_delta_time = time.time() - T
+                if real_delta_time < self.target_delta_time:
+                    time.sleep(self.target_delta_time - real_delta_time)
+                self.print_tps(time.time() - T)
+                
             self.quit()            
         except Exception as e:
             self.quit()  
@@ -152,7 +158,7 @@ class Menu_GUI:
                                       text='tps of the sim:')
         self.label_sim_tps.place(x=20, y=100, width=120, height=30)
         self.entry_sim_tps = tk.Entry(master=self.window)
-        self.entry_sim_tps.insert(tk.END, '30')
+        self.entry_sim_tps.insert(tk.END, '50')
         self.entry_sim_tps.place(x=160, y=100, width=50, height=30)
         self.entry_sim_tps.bind('<FocusOut>', self.check_valid)
         
