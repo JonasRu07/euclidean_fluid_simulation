@@ -72,47 +72,37 @@ class Fluid:
                 
         self.u_grid = aux_u_grid
         self.v_grid = aux_v_grid
-                     
-    def advect_velocity_simple(self):
         
-        new_u = copy.deepcopy(self.u_grid)
-        new_v = copy.deepcopy(self.v_grid)
-
-        # Up Down
-        for j in range(1, self.height):
-            for i in range(1, self.width - 1):
-
-                u_val = self.u_grid[j][i]
-                v_val = (self.v_grid[j-1][i] + self.v_grid[j][i]) * 0.5
-
-                i_from = i - int(np.sign(u_val))
-                j_from = j - int(np.sign(v_val))
-                i_from = max(0, min(self.width - 2, i_from))
-                j_from = max(0, min(self.height - 1, j_from))
-
-                new_u[j][i] = self.u_grid[j_from][i_from]
+    def advect_velocity(self):
+        return
+        # Currently not working as it decreases the flow rate instead of advecting it
+        
+        aux_u_grid = copy.deepcopy(self.u_grid)
+        aux_v_grid = copy.deepcopy(self.v_grid)
+        
+        for i in range(self.height):
+            for j in range(self.width):
                 
-        # Left right
-        for j in range(1, self.height - 1):
-            for i in range(1, self.width):
-                u_val = (self.u_grid[j][i-1] + self.u_grid[j][i]) * 0.5
-                v_val = self.v_grid[j][i]
-
-                i_from = i - int(np.sign(u_val))
-                j_from = j - int(np.sign(v_val))
+                u_dir = self.u_grid[max(0, i-1)][j] + self.u_grid[i][j]
+                if u_dir < 0:
+                    aux_u_grid[i][j] = self.u_grid[max(0, i-1)][j]
+                elif u_dir > 0:
+                    aux_u_grid[i][j] = self.u_grid[i+1][j]
+                    
+                v_dir = self.v_grid[i][max(0, j-1)] + self.v_grid[i][j]
+                if u_dir < 0:
+                    aux_v_grid[i][j] = self.v_grid[i][max(0, j-1)]
+                elif v_dir > 0:
+                    aux_v_grid[i][j] = self.v_grid[i][j+1]
+                    
                 
-                i_from = max(0, min(self.width - 1, i_from))
-                j_from = max(0, min(self.height - 2, j_from))
-
-                new_v[j][i] = self.v_grid[j_from][i_from]
-
-        self.u_grid = new_u
-        self.v_grid = new_v
+        self.u_grid = aux_u_grid
+        self.v_grid = aux_v_grid
             
     def apply_object_interaction(self):
         for obj in self.objects:
-            for i in range(self.width+1):
-                for j in range(self.height+1):
+            for i in range(self.width-1):
+                for j in range(self.height-1):
                     if obj.occupies(i, j):
                         self.scalars[i][j] = 0        
                     

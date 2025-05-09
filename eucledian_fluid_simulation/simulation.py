@@ -13,9 +13,13 @@ class Simulation:
                                                 height,
                                                 self.fluid.get_flow_dir,
                                                 objects,
-                                                self.fluid.solve_incompressible_2D_array,
+                                                self.action,
                                                 self.__show_fps,
                                                 self.tps)
+        
+    def action(self):
+        self.fluid.solve_incompressible_2D_array()
+        self.fluid.advect_velocity()
         
         
     def mainloop(self):
